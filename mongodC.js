@@ -1,14 +1,28 @@
-import { MongoClient } from "mongodb";
+const { MongoClient } = require("mongodb");
+require('dotenv').config();
+
+if (!process.env.MONGO_PASSWORD) {
+  throw new Error("MONGO_PASSWORD environment variable is not set.");
+}
 
 const password = encodeURIComponent(process.env.MONGO_PASSWORD.trim());
-const connectionString = `mongodb+srv://integrationninjas:${password}@devcluster.xf2gcci.mongodb.net/?retryWrites=true&w=majority`; // clustore url
+const connectionString = `mongodb+srv://dumbremegha:${password}@devcluster.inmatp7.mongodb.net/?retryWrites=true&w=majority&appName=DevCluster`; // cluster url
 const client = new MongoClient(connectionString);
-let conn;
-try {
-  conn = await client.connect();
-  console.log("connection successful")
-} catch(e) {
-  console.error(e);
+
+let db = null;
+
+async function getDb() {
+  if (!db) {
+    try {
+      await client.connect();
+      console.log("connection successful");
+      db = client.db("integration_ninjas");
+    } catch (e) {
+      console.error("MongoDB connection error:", e);
+      throw e;
+    }
+  }
+  return db;
 }
-let db = conn.db("integration_ninjas");
-export default db;
+
+module.exports = getDb;
