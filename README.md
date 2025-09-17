@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Nodejs app with rest and graphql example
 
 An example of GraphQL queries/mutations with Node and Express js.
@@ -41,3 +42,6 @@ mutation{
   }
 }
 
+=======
+# nodejs-app
+>>>>>>> 2c0b4683b7ca15ac8ccae5702a6d48bdf51eee7b
