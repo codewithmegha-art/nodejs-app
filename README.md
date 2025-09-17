@@ -42,6 +42,5 @@ mutation{
   }
 }
 
-=======
 # nodejs-app
->>>>>>> 2c0b4683b7ca15ac8ccae5702a6d48bdf51eee7b
+
