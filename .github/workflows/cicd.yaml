@@ -1,0 +1,39 @@
+name: Deploy Node JS App
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest .
+
+      - name: Push Docker image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull Docker image from Docker Hub
+        run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
+
+      - name: Run Docker Container
+        run: |
+          docker stop nodejs-app-dcontainer || true
+          docker rm nodejs-app-dcontainer || true
+          docker run -d -p 4000:4000 \
+            --name nodejs-app-dcontainer \
+            -e MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
+            -e PORT=4000 \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
