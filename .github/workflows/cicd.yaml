@@ -1,48 +1,3 @@
-# name: Deploy Node JS App
-# # Trigger the workflow on push to main branch
-# on:
-#   push:
-#     branches:
-#       - "main"
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout Source Code
-#         uses: actions/checkout@v4
-
-#       - name: Debug - List repo files
-#         run: ls -lah ${{ github.workspace }}
-
-#       - name: Login to Docker Hub
-#         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-
-#       - name: Build Docker image
-#         run: docker buildx build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest --load
-
-#       - name: Push Docker image to Docker Hub
-#         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
-
-#   deploy:
-#     needs: build
-#     runs-on: self-hosted
-#     steps:
-#       - name: Pull Docker image from Docker Hub
-#         run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
-
-#       - name: Run Docker Container
-#         run: |
-#           docker stop nodejs-app-dcontainer || true
-#           docker rm nodejs-app-dcontainer || true
-#           docker run -d -p 4000:4000 \
-#             --name nodejs-app-dcontainer \
-#             -e MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
-#             -e PORT=4000 \
-#             ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
-
-
-
 name: Deploy Node Application
 
 on: 
@@ -63,7 +18,7 @@ jobs:
       - name: Publish Image to docker hub
         run: docker push meghadumbre/nodejs-app:latest 
  
-  deploy:
+  deploy: 
     needs: build
     runs-on: self-hosted 
     steps:
@@ -72,4 +27,7 @@ jobs:
       - name: Delete old container
         run: docker rm -f nodejs-app-container  
       - name: Run Docker Container
-        run: docker run -d -p 4000:4000 --name nodejs-app-container -e MONGO_PASSWORD='${{ secrets.MONGO_PASSWORD }}' meghadumbre/nodejs-app
+        run: docker run -d -p 4000:4000 --name nodejs-app-container -e MONGO_PASSWORD='${{ secrets.MONGO_PASSWORD }}' meghadumbre/nodejs-app 
+
+
+# finish the code
