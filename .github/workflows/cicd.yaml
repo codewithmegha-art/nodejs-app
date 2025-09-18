@@ -16,8 +16,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: DOCKER_BUILDKIT=0 docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest .
-
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest $GITHUB_WORKSPACE
 
       - name: Push Docker image to Docker Hub
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
