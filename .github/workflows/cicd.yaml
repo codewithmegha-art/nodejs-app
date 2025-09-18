@@ -32,4 +32,11 @@ jobs:
         run: docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
 
       - name: Run Docker Container
-        run: docker run -d -p 4000:4000 --name nodejs-app-dcontainer -e MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
+        run: |
+          docker stop nodejs-app-dcontainer || true
+          docker rm nodejs-app-dcontainer || true
+          docker run -d -p 4000:4000 \
+            --name nodejs-app-dcontainer \
+            -e MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
+            -e PORT=4000 \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/nodejs-app:latest
